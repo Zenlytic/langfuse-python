@@ -492,10 +492,16 @@ def _extract_streamed_openai_response(resource, chunks):
         choices = chunk.get("choices", [])
 
         for choice in choices:
+            if not choice:
+                continue
+
             if _is_openai_v1():
                 choice = choice.__dict__
+
             if resource.type == "chat":
                 delta = choice.get("delta", None)
+                if not delta:
+                    continue
 
                 if _is_openai_v1():
                     delta = delta.__dict__
